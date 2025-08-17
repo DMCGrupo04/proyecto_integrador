@@ -1,5 +1,0 @@
-config {
-  type: "table"
-}
-
-select '¡Hola desde Dataform!' as saludo

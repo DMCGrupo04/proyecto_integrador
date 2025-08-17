@@ -1,0 +1,26 @@
+config {
+  type: "incremental",
+  schema: "silver",
+  name: "CentroCosto",
+  uniqueKey: ["IDCentroCosto"]
+}
+
+-- Deduplicar de bronze, solo de los registros de ayer
+with dedup as (
+  select
+    *,
+    row_number() over (
+      partition by IDCentroCosto, IDDependencia
+      order by FechaModificacion desc, FechaCreacion desc
+    ) as rn
+  from proyectointegrador-grupo04.bronze.CentroCosto
+  where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(FechaModificacion) = date_sub(current_date(), interval 1 day)
+)
+
+select
+  IDCentroCosto,
+  CentroCosto,
+  CAST(IDUnidadNegocio AS INT) IDUnidadNegocio
+from dedup
+where rn = 1 AND IDUnidadNegocio not in ('0','IGV') AND IDDependencia='UCCI'
