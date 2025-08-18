@@ -1,0 +1,17 @@
+config {
+  type: "operations",
+  description: "Exporta la tabla silver.Servicio a GCS en formato Parquet, particionado por fecha (día anterior)."
+}
+
+EXPORT DATA OPTIONS(
+    uri = CONCAT(
+  'gs://bucket_dmc_grupo04/silver/sql/Servicio/',
+  FORMAT_DATE('%Y/%m/%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)),
+  '/servicio_',
+  FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)),
+  '_*.parquet'),
+  format='PARQUET',
+  overwrite=true
+) AS
+SELECT *
+FROM proyectointegrador-grupo04.silver.Servicio;

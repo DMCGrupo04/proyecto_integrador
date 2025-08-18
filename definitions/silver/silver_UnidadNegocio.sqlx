@@ -1,0 +1,33 @@
+config {
+  type: "incremental",
+  schema: "silver",
+  name: "UnidadNegocio",
+  uniqueKey: ["IDUnidadNegocio"]
+}
+
+-- Deduplicar de bronze, solo de los registros de ayer
+with dedup as (
+  select
+    IDUnidadNegocio,
+    UnidadNegocio,
+    Descripcion,
+    row_number() over (
+      partition by IDUnidadNegocio, IDDependencia
+      order by FechaModificacion desc, FechaCreacion desc
+    ) as rn
+  from proyectointegrador-grupo04.bronze.UnidadNegocio
+  where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(FechaModificacion) = date_sub(current_date(), interval 1 day)
+)
+
+select
+    CAST(IDUnidadNegocio AS INT) IDUnidadNegocio,
+    UnidadNegocio,
+    CASE WHEN REPLACE(Descripcion,'UC - ','')='PREGRADO' THEN 'PG-PRESENCIAL'
+        WHEN REPLACE(Descripcion,'UC - ','')='VIRTUAL' THEN 'PG-VIRTUAL'
+        WHEN REPLACE(Descripcion,'UC - ','')='CPGT' THEN 'PG-SEMIPRESENCIAL'
+        WHEN REPLACE(Descripcion,'UC - ','')='CIC' THEN 'CENTRO IDIOMAS'
+        WHEN REPLACE(Descripcion,'UC - ','')='CEC' THEN 'CENTRO EDUCACION CONTINUA'
+        ELSE REPLACE(Descripcion,'UC - ','') END Descripcion
+from dedup
+where rn = 1 AND IDUnidadNegocio not in ('0','IGV') AND IDDependencia='UCCI'
