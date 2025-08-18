@@ -14,8 +14,8 @@ with dedup as (
       order by FechaModificacion desc, FechaCreacion desc
     ) as rn
   from proyectointegrador-grupo04.bronze.CentroCosto
-  where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
-     or date(FechaModificacion) = date_sub(current_date(), interval 1 day)
+  --where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+  --   or date(FechaModificacion) = date_sub(current_date(), interval 1 day)
 )
 
 select

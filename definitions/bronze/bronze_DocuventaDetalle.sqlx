@@ -3,7 +3,7 @@ config {
   type: "incremental",
   schema: "bronze",
   database: "proyectointegrador-grupo04",
-  name: "DocuventaDetalle",
+  name: "DocuVentaDetalle",
   bigquery: {
     partitionBy: "FechaCreacion"
   },
@@ -21,7 +21,7 @@ select
   IDCuenta,
   IDPerAcad,
   IDSeccionC,
-  IDAño,
+  IDAno,
   NroOperac,
   FechaOperac,
   Descripcion,
@@ -40,4 +40,4 @@ select
   IDUnidadNegocio,
   FechaCreacion,
   FechaModificacion
-from `proyectointegrador-grupo04.sql_data.DocuventaDetalle`
+from `proyectointegrador-grupo04.sql_data.DocuVentaDetalle`

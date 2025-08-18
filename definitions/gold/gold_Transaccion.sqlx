@@ -1,0 +1,77 @@
+config {
+  type: "incremental",
+  schema: "gold",
+  name: "Transaccion",
+  uniqueKey: ["IDTransaccion"]
+}
+
+-- Deduplicar de bronze, solo de los registros de ayer
+with dedup as (
+  select CAST(C.IDTipo AS STRING) || '-' || 
+        CAST(C.IDSerie AS STRING) || '-' || 
+        CAST(C.IDDocuVenta AS STRING)|| '-' || 
+        D.IDConcepto|| '-' ||
+        D.IDSeccionC|| '-' ||
+        D.IDPerAcad|| '-' ||
+        D.IDAlumno IDTransaccion,
+        C.FechaEmi,
+        CAST(C.IDTipo AS STRING) || '-' || 
+        CAST(C.IDSerie AS STRING) || '-' || 
+        CAST(C.IDDocuVenta AS STRING) CodigoDocuventa,
+        u.Descripcion UnidadNegocio,
+        cc.CentroCosto,
+        servicio.Servicio,
+        CASE c.IDSede WHEN 'HYO' THEN 'HUANCAYO'
+                    WHEN 'ARQP' THEN 'AREQUIPA'
+                    WHEN 'LIMA' THEN 'LIMA'
+                    WHEN 'CUZ' THEN 'CUZCO'
+                    WHEN 'VIR' THEN 'A DISTANCIA'
+                    WHEN 'ICA' THEN 'ICA'
+        END Sede,
+        CASE C.IDTipo when 7 then D.Monto *-1 when 8 then D.Monto *-1 else D.Monto end Monto,
+        d.IDAlumno,
+        CASE mno.Sexo WHEN '1' THEN 'FEMENINO'
+                    WHEN '0' THEN 'MASCULINO'
+                    ELSE 'NO IDENTIFICADO' END Sexo,
+        mno.Departamento,
+        row_number() over (
+        partition by CAST(C.IDTipo AS STRING) || '-' || 
+                    CAST(C.IDSerie AS STRING) || '-' || 
+                    CAST(C.IDDocuVenta AS STRING)|| '-' || 
+                    D.IDConcepto|| '-' ||
+                    D.IDSeccionC|| '-' ||
+                    D.IDPerAcad|| '-' ||
+                    D.IDAlumno
+        order by FechaEmi desc
+        ) as rn
+  from `proyectointegrador-grupo04.silver.Docuventa` as c
+    inner join `proyectointegrador-grupo04.silver.DocuVentaDetalle` as d
+        on  c.idtipo = d.idtipo
+        and c.idserie = d.idserie
+        and c.iddocuventa = d.iddocuventa
+    inner join `proyectointegrador-grupo04.silver.CentroCosto` cc
+        on d.IDCentroCosto=cc.IDCentroCosto
+    inner join `proyectointegrador-grupo04.silver.UnidadNegocio` u
+        on u.IDUnidadNegocio=d.IDUnidadNegocio
+    inner join `proyectointegrador-grupo04.silver.Servicio` s
+        on s.IDServicio=d.IDServicio
+	inner join `proyectointegrador-grupo04.silver.PersonaAlumno` mno
+		on d.IDAlumno=mno.IDAlumno
+ -- where (date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+   --  or date(FechaModificacion) = date_sub(current_date(), interval 1 day))
+)
+
+select
+        IDTransaccion,
+        FechaEmi,
+        CodigoDocuventa,
+        UnidadNegocio,
+        CentroCosto,
+        Servicio,
+        Sede,
+        Monto,
+        IDAlumno,
+        Sexo,
+        Departamento
+from dedup
+where rn = 1
