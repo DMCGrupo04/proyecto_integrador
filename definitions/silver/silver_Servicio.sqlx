@@ -9,19 +9,19 @@ config {
 with dedup as (
   select
     IDServicio,
-    
+    Servicio,
     row_number() over (
-      partition by IDServicio, IDDependencia
+      partition by IDServicio
       order by FechaModificacion desc, FechaCreacion desc
     ) as rn
   from proyectointegrador-grupo04.bronze.Servicio
-  where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
-     or date(FechaModificacion) = date_sub(current_date(), interval 1 day)
+  where IDDependencia='UCCI' 
+    AND (date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(FechaModificacion) = date_sub(current_date(), interval 1 day))
 )
 
 select
-  IDCentroCosto,
-  CentroCosto,
-  CAST(IDUnidadNegocio AS INT) IDUnidadNegocio
+  IDServicio,
+  Servicio
 from dedup
-where rn = 1 AND IDUnidadNegocio not in ('0','IGV') AND IDDependencia='UCCI'
+where rn = 1 

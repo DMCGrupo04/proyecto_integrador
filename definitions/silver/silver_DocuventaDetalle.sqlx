@@ -1,0 +1,47 @@
+config {
+  type: "incremental",
+  schema: "silver",
+  name: "DocuVentaDetalle",
+  uniqueKey: ["IDTipo","IDSerie","IDDocuventa","IDAlumno","IDConcepto","IDPerAcad","IDSeccionc"]
+}
+
+-- Deduplicar de bronze, solo de los registros de ayer
+with dedup as (
+  select
+    IDTipo, 
+	IDSerie,
+	IDDocuVenta,
+	IDAlumno,
+	IDConcepto,
+	IDPerAcad,
+	IDSeccionC,
+	Monto,
+  IDCentroCosto,
+	IDServicio,
+	IDUnidadNegocio,
+    row_number() over (
+      partition by IDTipo,IDSerie,IDDocuventa,IDAlumno,IDConcepto,IDPerAcad,IDSeccionc
+      order by FechaModificacion desc, FechaCreacion desc
+    ) as rn
+  from proyectointegrador-grupo04.bronze.DocuVentaDetalle
+  where IDDependencia='UCCI'
+    AND IDUnidadNegocio not in ('0','IGV')
+    AND IDTipo in (1,3,7,8,9)
+   -- AND (date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+    -- or date(FechaModificacion) = date_sub(current_date(), interval 1 day))
+)
+
+select
+    CAST(IDTipo AS INT) IDTipo, 
+    CAST(IDSerie AS INT) IDSerie,
+    CAST(IDDocuVenta AS INT) IDDocuventa,
+    IDAlumno,
+    IDConcepto,
+    IDPerAcad,
+    IDSeccionC,
+    Monto,
+    IDCentroCosto,
+    IDServicio,
+    CAST(IDUnidadNegocio AS INT) IDUnidadNegocio
+from dedup
+where rn = 1

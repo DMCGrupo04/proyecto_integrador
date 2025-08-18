@@ -3,7 +3,7 @@ config {
   type: "incremental",
   schema: "bronze",
   database: "proyectointegrador-grupo04",
-  name: "Docuventa",
+  name: "DocuVenta",
   bigquery: {
     partitionBy: "FechaCreacion"
   },
@@ -22,11 +22,10 @@ select
   MontoCancelado,
   Total,
   Anulado,
-  IDCuenta,
   Descripcion,
   PorCobrar,
   IDInstancia,
   IDMedioPago,
   FechaCreacion,
   FechaModificacion
-from `proyectointegrador-grupo04.sql_data.Docuventa`
+from `proyectointegrador-grupo04.sql_data.DocuVenta`

@@ -1,0 +1,29 @@
+config {
+  type: "incremental",
+  schema: "silver",
+  name: "PersonaAlumno",
+  uniqueKey: ["IDAlumno"]
+}
+
+-- Deduplicar de bronze, solo de los registros de ayer
+with dedup as (
+  select
+    IDAlumno,
+    Sexo,
+    Departamento,
+    row_number() over (
+      partition by IDAlumno
+      order by FechaModificacion desc, FechaCreacion desc
+    ) as rn
+  from proyectointegrador-grupo04.bronze.PersonaAlumno
+  --where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+    -- or date(FechaModificacion) = date_sub(current_date(), interval 1 day)
+)
+
+select
+  IDAlumno,
+  IFNULL(REPLACE(Sexo, ' ', '2'), '2') AS Sexo,
+  --SAFE_CAST(FecNac AS DATE) AS FecNac,
+  UPPER(IFNULL(Departamento, 'No Asignó')) AS Departamento
+from dedup
+where rn = 1 
