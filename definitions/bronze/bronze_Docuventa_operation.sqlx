@@ -5,7 +5,7 @@ config {
 
 EXPORT DATA OPTIONS(
     uri = CONCAT(
-  'gs://bucket_dmc_grupo04/bronze/sql/Docuventa/',
+  'gs://bucket_dmc_grupo04/bronze/sql/DocuVenta/',
   FORMAT_DATE('%Y/%m/%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)),
   '/docuventa_',
   FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY)),
@@ -14,4 +14,6 @@ EXPORT DATA OPTIONS(
   overwrite=true
 ) AS
 SELECT *
-FROM proyectointegrador-grupo04.bronze.Docuventa;
+FROM proyectointegrador-grupo04.bronze.DocuVenta
+where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(FechaModificacion) = date_sub(current_date(), interval 1 day);
