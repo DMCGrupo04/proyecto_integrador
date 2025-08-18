@@ -30,6 +30,14 @@ with dedup as (
         END Sede,
         CASE C.IDTipo when 7 then D.Monto *-1 when 8 then D.Monto *-1 else D.Monto end Monto,
         d.IDAlumno,
+        mno.FecNac,
+        extract(year from current_date()) - extract(year from FecNac)
+        - case
+        when extract(month from current_date()) < extract(month from FecNac)
+              or (extract(month from current_date()) = extract(month from FecNac)
+                  and extract(day from current_date()) < extract(day from FecNac))
+        then 1 else 0
+        end Edad,
         CASE mno.Sexo WHEN '1' THEN 'FEMENINO'
                     WHEN '0' THEN 'MASCULINO'
                     ELSE 'NO IDENTIFICADO' END Sexo,
@@ -57,8 +65,18 @@ with dedup as (
         on s.IDServicio=d.IDServicio
 	inner join `proyectointegrador-grupo04.silver.PersonaAlumno` mno
 		on d.IDAlumno=mno.IDAlumno
- -- where (date(FechaCreacion) = date_sub(current_date(), interval 1 day)
-   --  or date(FechaModificacion) = date_sub(current_date(), interval 1 day))
+    where (date(c.FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(c.FechaModificacion) = date_sub(current_date(), interval 1 day))
+     OR (date(d.FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(d.FechaModificacion) = date_sub(current_date(), interval 1 day))
+     OR (date(cc.FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(cc.FechaModificacion) = date_sub(current_date(), interval 1 day))
+     OR (date(u.FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(u.FechaModificacion) = date_sub(current_date(), interval 1 day))
+     OR (date(s.FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(s.FechaModificacion) = date_sub(current_date(), interval 1 day))
+     OR (date(mno.FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(mno.FechaModificacion) = date_sub(current_date(), interval 1 day))
 )
 
 select
@@ -71,7 +89,19 @@ select
         Sede,
         Monto,
         IDAlumno,
+        CASE WHEN extract(year from FecNac) <=1900 THEN 'NO DEFINIDO'
+            ELSE
+            CASE WHEN Edad<=18 THEN '0-18 AÑOS'
+             WHEN Edad<=25 AND Edad>18 THEN '19-25 AÑOS'
+             WHEN Edad<=30 AND Edad>25 THEN '26-30 AÑOS'
+             WHEN Edad<=35 AND Edad>30 THEN '31-35 AÑOS'
+             WHEN Edad<=40 AND Edad>35 THEN '36-40 AÑOS'
+             WHEN Edad<=50 AND Edad>40 THEN '41-50 AÑOS'
+             WHEN Edad<=70 AND Edad>50 THEN '51-70 AÑOS'
+             WHEN  Edad>70 THEN '70 AÑOS a mas'
+            END 
+        END RangoEdad,
         Sexo,
-        Departamento
+        REPLACE(Departamento,'NULL', 'NO DEFINIDO') Departamento
 from dedup
 where rn = 1

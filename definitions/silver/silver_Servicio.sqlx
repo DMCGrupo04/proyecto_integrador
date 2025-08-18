@@ -10,6 +10,8 @@ with dedup as (
   select
     IDServicio,
     Servicio,
+    FechaCreacion,
+    FechaModificacion,
     row_number() over (
       partition by IDServicio
       order by FechaModificacion desc, FechaCreacion desc
@@ -22,6 +24,8 @@ with dedup as (
 
 select
   IDServicio,
-  Servicio
+  Servicio,
+  FechaCreacion,
+  FechaModificacion
 from dedup
 where rn = 1 

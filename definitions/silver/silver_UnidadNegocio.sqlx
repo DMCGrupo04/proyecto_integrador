@@ -11,6 +11,8 @@ with dedup as (
     IDUnidadNegocio,
     UnidadNegocio,
     Descripcion,
+    FechaCreacion,
+    FechaModificacion,
     row_number() over (
       partition by IDUnidadNegocio, IDDependencia
       order by FechaModificacion desc, FechaCreacion desc
@@ -30,6 +32,8 @@ select
         WHEN REPLACE(Descripcion,'UC - ','')='CPGT' THEN 'PG-SEMIPRESENCIAL'
         WHEN REPLACE(Descripcion,'UC - ','')='CIC' THEN 'CENTRO IDIOMAS'
         WHEN REPLACE(Descripcion,'UC - ','')='CEC' THEN 'CENTRO EDUCACION CONTINUA'
-        ELSE REPLACE(Descripcion,'UC - ','') END Descripcion
+        ELSE REPLACE(Descripcion,'UC - ','') END Descripcion,
+    FechaCreacion,
+    FechaModificacion
 from dedup
 where rn = 1 
