@@ -1,0 +1,43 @@
+-- models/bronze/bronze_docuventa_detalle.sqlx
+config {
+  type: "incremental",
+  schema: "bronze",
+  database: "proyectointegrador-grupo04",
+  name: "DocuventaDetalle",
+  bigquery: {
+    partitionBy: "FechaCreacion"
+  },
+  tags: ["bronze"]
+}
+
+-- Siempre inserta lo que hay en sql_data (snapshot diario)
+select
+  IDTipo,
+  IDSerie,
+  IDDocuventa,
+  IDDependencia,
+  IDAlumno,
+  IDConcepto,
+  IDCuenta,
+  IDPerAcad,
+  IDSeccionC,
+  IDAño,
+  NroOperac,
+  FechaOperac,
+  Descripcion,
+  FecInic,
+  IDEscuela,
+  IDVendedor,
+  Monto,
+  Cancelado,
+  MontoDeuda,
+  MontoDolar,
+  Moneda,
+  IDInstancia,
+  IDBanco,
+  IDCentroCosto,
+  IDServicio,
+  IDUnidadNegocio,
+  FechaCreacion,
+  FechaModificacion
+from `proyectointegrador-grupo04.sql_data.DocuventaDetalle`
