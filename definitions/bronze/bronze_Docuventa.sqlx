@@ -27,5 +27,7 @@ select
   IDInstancia,
   IDMedioPago,
   FechaCreacion,
-  FechaModificacion
+  ifnull(date(
+        safe.parse_date('%d/%m/%Y', nullif(FechaModificacion, 'NULL'))
+     ),FechaCreacion) FechaModificacion
 from `proyectointegrador-grupo04.sql_data.DocuVenta`
