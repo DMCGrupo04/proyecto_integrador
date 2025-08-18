@@ -14,4 +14,6 @@ EXPORT DATA OPTIONS(
   overwrite=true
 ) AS
 SELECT *
-FROM proyectointegrador-grupo04.silver.UnidadNegocio;
+FROM proyectointegrador-grupo04.silver.UnidadNegocio
+where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
+     or date(FechaModificacion) = date_sub(current_date(), interval 1 day);

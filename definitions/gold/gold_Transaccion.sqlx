@@ -102,6 +102,7 @@ select
             END 
         END RangoEdad,
         Sexo,
-        REPLACE(Departamento,'NULL', 'NO DEFINIDO') Departamento
+        REPLACE(Departamento,'NULL', 'NO DEFINIDO') Departamento,
+        date_sub(current_date(), interval 1 day) FechaCreacion
 from dedup
 where rn = 1
