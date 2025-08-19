@@ -1,8 +1,9 @@
 config {
   type: "incremental",
   schema: "silver",
-  name: "UnidadNegocio",
-  uniqueKey: ["IDUnidadNegocio"]
+  name: "silver_UnidadNegocio",
+  uniqueKey: ["IDUnidadNegocio"],
+  dependencies: ["bronze_UnidadNegocio"]
 }
 
 -- Deduplicar de bronze, solo de los registros de ayer

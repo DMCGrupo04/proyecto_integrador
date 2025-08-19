@@ -3,7 +3,7 @@ config {
   type: "incremental",
   schema: "bronze",
   database: "proyectointegrador-grupo04",
-  name: "Servicio",
+  name: "bronze_Servicio",
   bigquery: {
     partitionBy: "FechaCreacion"
   },

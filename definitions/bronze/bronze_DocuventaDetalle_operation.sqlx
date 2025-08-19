@@ -1,6 +1,7 @@
 config {
   type: "operations",
-  description: "Exporta la tabla bronze.DocuVentaDetalle a GCS en formato Parquet, particionado por fecha (día anterior)."
+  description: "Exporta la tabla bronze.DocuVentaDetalle a GCS en formato Parquet, particionado por fecha (día anterior).",
+  dependencies: ["bronze_DocuVentaDetalle"]
 }
 
 EXPORT DATA OPTIONS(
