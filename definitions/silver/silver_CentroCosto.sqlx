@@ -14,7 +14,7 @@ with dedup as (
       partition by IDCentroCosto, IDDependencia
       order by FechaModificacion desc, FechaCreacion desc
     ) as rn
-  from proyectointegrador-grupo04.bronze.CentroCosto
+  from proyectointegrador-grupo04.bronze.bronze_CentroCosto
   where 
     IDDependencia='UCCI'
     AND IDUnidadNegocio not in ('0','IGV')

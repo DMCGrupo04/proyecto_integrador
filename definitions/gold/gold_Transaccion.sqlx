@@ -28,7 +28,7 @@ with dedup as (
         CAST(C.IDDocuVenta AS STRING) CodigoDocuventa,
         u.Descripcion UnidadNegocio,
         cc.CentroCosto,
-        servicio.Servicio,
+        s.Servicio,
         CASE c.IDSede WHEN 'HYO' THEN 'HUANCAYO'
                     WHEN 'ARQP' THEN 'AREQUIPA'
                     WHEN 'LIMA' THEN 'LIMA'
@@ -60,18 +60,18 @@ with dedup as (
                     D.IDAlumno
         order by FechaEmi desc
         ) as rn
-  from `proyectointegrador-grupo04.silver.Docuventa` as c
-    inner join `proyectointegrador-grupo04.silver.DocuVentaDetalle` as d
+  from `proyectointegrador-grupo04.silver.silver_Docuventa` as c
+    inner join `proyectointegrador-grupo04.silver.silver_DocuVentaDetalle` as d
         on  c.idtipo = d.idtipo
         and c.idserie = d.idserie
         and c.iddocuventa = d.iddocuventa
-    inner join `proyectointegrador-grupo04.silver.CentroCosto` cc
+    inner join `proyectointegrador-grupo04.silver.silver_CentroCosto` cc
         on d.IDCentroCosto=cc.IDCentroCosto
-    inner join `proyectointegrador-grupo04.silver.UnidadNegocio` u
+    inner join `proyectointegrador-grupo04.silver.silver_UnidadNegocio` u
         on u.IDUnidadNegocio=d.IDUnidadNegocio
-    inner join `proyectointegrador-grupo04.silver.Servicio` s
+    inner join `proyectointegrador-grupo04.silver.silver_Servicio` s
         on s.IDServicio=d.IDServicio
-	inner join `proyectointegrador-grupo04.silver.PersonaAlumno` mno
+	inner join `proyectointegrador-grupo04.silver.silver_PersonaAlumno` mno
 		on d.IDAlumno=mno.IDAlumno
     where (date(c.FechaCreacion) = date_sub(current_date(), interval 1 day)
      or date(c.FechaModificacion) = date_sub(current_date(), interval 1 day))

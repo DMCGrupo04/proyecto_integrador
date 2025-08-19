@@ -17,7 +17,7 @@ with dedup as (
       partition by IDServicio
       order by FechaModificacion desc, FechaCreacion desc
     ) as rn
-  from proyectointegrador-grupo04.bronze.Servicio
+  from proyectointegrador-grupo04.bronze.bronze_Servicio
   where IDDependencia='UCCI' 
     AND (date(FechaCreacion) = date_sub(current_date(), interval 1 day)
      or date(FechaModificacion) = date_sub(current_date(), interval 1 day))
