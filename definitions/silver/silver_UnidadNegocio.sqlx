@@ -18,7 +18,7 @@ with dedup as (
       partition by IDUnidadNegocio, IDDependencia
       order by FechaModificacion desc, FechaCreacion desc
     ) as rn
-  from proyectointegrador-grupo04.bronze.UnidadNegocio
+  from proyectointegrador-grupo04.bronze.bronze_UnidadNegocio
   where IDDependencia='UCCI'
      AND IDUnidadNegocio not in ('0','IGV')
      AND (date(FechaCreacion) = date_sub(current_date(), interval 1 day)

@@ -21,7 +21,7 @@ with dedup as (
       partition by IDAlumno
       order by FechaModificacion desc, FechaCreacion desc
     ) as rn
-  from proyectointegrador-grupo04.bronze.PersonaAlumno
+  from proyectointegrador-grupo04.bronze.bronze_PersonaAlumno
   where date(FechaCreacion) = date_sub(current_date(), interval 1 day)
      or date(FechaModificacion) = date_sub(current_date(), interval 1 day)
 )

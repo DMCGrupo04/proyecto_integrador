@@ -26,7 +26,7 @@ with dedup as (
       partition by IDTipo,IDSerie,IDDocuventa,IDAlumno,IDConcepto,IDPerAcad,IDSeccionc
       order by FechaModificacion desc, FechaCreacion desc
     ) as rn
-  from proyectointegrador-grupo04.bronze.DocuVentaDetalle
+  from proyectointegrador-grupo04.bronze.bronze_DocuVentaDetalle
   where IDDependencia='UCCI'
     AND IDUnidadNegocio not in ('0','IGV')
     AND IDTipo in (1,3,7,8,9)
