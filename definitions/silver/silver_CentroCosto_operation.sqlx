@@ -1,6 +1,7 @@
 config {
   type: "operations",
-  description: "Exporta la tabla silver.CentroCosto a GCS en formato Parquet, particionado por fecha (día anterior)."
+  description: "Exporta la tabla silver.CentroCosto a GCS en formato Parquet, particionado por fecha (día anterior).",
+  dependencies: ["silver_CentroCosto"]
 }
 
 EXPORT DATA OPTIONS(

@@ -1,8 +1,16 @@
 config {
   type: "incremental",
   schema: "gold",
-  name: "Transaccion",
-  uniqueKey: ["IDTransaccion"]
+  name: "gold_Transaccion",
+  uniqueKey: ["IDTransaccion"],
+  dependencies: [
+    "silver_CentroCosto",
+    "silver_Docuventa",
+    "silver_DocuVentaDetalle",
+    "silver_PersonaAlumno",
+    "silver_Servicio",
+    "silver_UnidadNegocio"
+  ]
 }
 
 -- Deduplicar de bronze, solo de los registros de ayer

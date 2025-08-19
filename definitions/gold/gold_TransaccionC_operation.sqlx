@@ -1,6 +1,7 @@
 config {
   type: "operations",
-  description: "Se obtiene la transaccion final."
+  description: "Se obtiene la transaccion final.",
+  dependencies: ["gold_Transaccion"]
 }
 
 EXPORT DATA OPTIONS(
