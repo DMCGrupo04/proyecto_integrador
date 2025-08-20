@@ -31,7 +31,7 @@ select
   IFNULL(REPLACE(Sexo, ' ', '2'), '2') AS Sexo,
   FecNac,
   UPPER(IFNULL(Departamento, 'No Asignó')) AS Departamento,
-    FechaCreacion,
-    FechaModificacion
+  FechaCreacion,
+  FechaModificacion
 from dedup
 where rn = 1 
